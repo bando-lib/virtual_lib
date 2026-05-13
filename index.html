@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.5">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="ja"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Virtual Library Prototype&lt;/title&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- A-Frame --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://aframe.io/releases/1.5.0/aframe.min.js"&gt;&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>.hint {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>position: absolute;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>top: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>left: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>z-index: 999;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: rgba(0,0,0,0.6);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 10px 14px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>border-radius: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>line-height: 1.6;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div class="hint"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>WASDキー：移動&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>マウス：視点移動&lt;br&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>本をクリック：書誌ページを開く</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;a-scene background="color: #ECECEC"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- カメラ --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;a-entity</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position="0 1.6 4"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;a-camera&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;a-cursor color="#333"&gt;&lt;/a-cursor&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/a-camera&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/a-entity&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- 床 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;a-plane</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rotation="-90 0 0"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width="30"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>height="30"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color="#d9d9d9"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/a-plane&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- 壁 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;a-plane</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position="0 4 -8"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width="20"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>height="10"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color="#f5f5f5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/a-plane&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- タイトル --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;a-text</p>
+<p class="p1"><span class="Apple-converted-space">    </span>value="Virtual Library Prototype"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position="-3 7 -7.9"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color="#222"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width="12"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/a-text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- ===================================== --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- 銀河鉄道の夜 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- ===================================== --&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- 本の表紙 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;a-plane</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position="-2 2 -5"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width="1.5"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>height="2.2"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Ginga_tetsudo_no_yoru.jpg/800px-Ginga_tetsudo_no_yoru.jpg"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>class="clickable"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/a-plane&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- タイトル --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;a-text</p>
+<p class="p1"><span class="Apple-converted-space">    </span>value="銀河鉄道の夜"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position="-2.7 0.6 -4.9"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color="#111"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width="5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/a-text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- クリック領域 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;a-plane</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position="-2 2 -4.95"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width="1.5"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>height="2.2"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>material="opacity: 0"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>class="clickable"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>link-handler="url: https://www.aozora.gr.jp/cards/000081/card43737.html"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/a-plane&gt;</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- ===================================== --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Digital computer design fundamentals --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- ===================================== --&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- 本の表紙 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;a-plane</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position="2 2 -5"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width="1.5"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>height="2.2"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&amp;w=800&amp;auto=format&amp;fit=crop"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>class="clickable"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/a-plane&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- タイトル --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;a-text</p>
+<p class="p1"><span class="Apple-converted-space">    </span>value="Digital computer design fundamentals"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position="0.8 0.2 -4.9"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>color="#111"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width="6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/a-text&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- クリック領域 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;a-plane</p>
+<p class="p1"><span class="Apple-converted-space">    </span>position="2 2 -4.95"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>width="1.5"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>height="2.2"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>material="opacity: 0"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>class="clickable"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>link-handler="url: https://catalog.hathitrust.org/Record/0044441157"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/a-plane&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/a-scene&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>AFRAME.registerComponent('link-handler', {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>schema: {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>url: { type: 'string' }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>},</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>init: function () {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>this.el.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>window.open(this.data.url, '_blank');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
