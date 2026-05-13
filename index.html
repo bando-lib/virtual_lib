@@ -15,6 +15,28 @@
           }.bind(this));
         }
       });
+      AFRAME.registerComponent('isbn-cover', {
+        schema: { type: 'string' }, // ISBNを指定する
+        init: function () {
+          var el = this.el;
+          var isbn = this.data;
+    
+    // openBD APIを叩く
+    fetch('https://api.openbd.jp/v1/get?isbn=' + isbn)
+      .then(response => response.json())
+      .then(data => {
+        // データが存在し、かつ書影（cover）があるかチェック
+        if (data && data[0] && data[0].summary && data[0].summary.cover) {
+          var coverUrl = data[0].summary.cover;
+          // A-Frameのエンティティにテクスチャとしてセット
+          el.setAttribute('src', coverUrl);
+        } else {
+          console.log('書影が見つかりませんでした: ' + isbn);
+        }
+      })
+      .catch(err => console.error('APIエラー:', err));
+  }
+});
     </script>
   </head>
   <body>
@@ -30,9 +52,12 @@
       <!-- 2. 背景と地面 -->
       <a-sky color="#ECECEC"></a-sky>
       <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
+      
+      <!-- 本棚の棚板イメージ -->
+      <a-box position="0 1.15 -3" width="4" height="0.05" depth="1" color="#8B4513"></a-box>
 
       <!-- 3. 本の配置（面陳） -->
-      
+            
       <!-- 銀河鉄道の夜 -->
       <a-box position="-1.2 1.5 -3" depth="0.05" height="0.6" width="0.4" 
              src="#ginga-cover"
@@ -49,13 +74,14 @@
              animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
       </a-box>
 
-      <!-- アントレプレナーシップ -->
-      <a-box position="1.2 1.5 -3" depth="0.05" height="0.6" width="0.4" 
-             src="#entre-cover"
-             url-link="url: https://elib.maruzen.co.jp/elib/html/BookDetail/Id/3000131151"
-             animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
-             animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
-      </a-box>
+<!-- アントレプレナーシップ（アニメーション追加版） -->
+<a-box position="1.2 1.5 -3" 
+       depth="0.05" height="0.6" width="0.4"
+       isbn-cover="9784641165847" 
+       url-link="url: https://elib.maruzen.co.jp/elib/html/BookDetail/Id/3000131151"
+       animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
+       animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
+</a-box>
 
       <!-- 4. カメラ設定（マウスでクリックできるように設定） -->
       <a-entity camera look-controls>
