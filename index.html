@@ -5,13 +5,12 @@
   <title>Virtual Library Prototype</title>
 
   <!-- A-Frame -->
-  
-<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-event-set-component@5.0.1/dist/aframe-event-set-component.min.js"></script>
-  
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
   <style>
     body {
       margin: 0;
+      overflow: hidden;
     }
 
     .hint {
@@ -40,14 +39,9 @@
 <a-scene background="color: #ECECEC">
 
   <!-- カメラ -->
-  <a-entity
-    position="0 1.6 4">
-
+  <a-entity position="0 1.6 4">
     <a-camera>
-      <a-cursor
-        color="#333"
-        raycaster="objects: .clickable">
-        </a-cursor>
+      <a-cursor color="#333"></a-cursor>
     </a-camera>
   </a-entity>
 
@@ -61,7 +55,7 @@
 
   <!-- 壁 -->
   <a-plane
-    position="0 4 -16"
+    position="0 4 -10"
     width="20"
     height="10"
     color="#f5f5f5">
@@ -70,66 +64,43 @@
   <!-- タイトル -->
   <a-text
     value="Virtual Library Prototype"
-    position="-3 7 -7.9"
+    position="-3 7 -9.8"
     color="#222"
     width="12">
   </a-text>
 
+  <!-- 棚 -->
   <a-box
-  position="0 1 -5"
-  depth="0.5"
-  height="0.2"
-  width="8"
-  color="#8B5A2B">
+    position="0 1 -5"
+    depth="0.5"
+    height="0.2"
+    width="8"
+    color="#8B5A2B">
   </a-box>
-  
+
   <!-- ===================================== -->
   <!-- 銀河鉄道の夜 -->
   <!-- ===================================== -->
 
-  <!-- 本の表紙 -->
-<a-plane
-  position="-2 2 -5"
-  width="1.5"
-  height="2.2"
-  src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Ginga_tetsudo_no_yoru.jpg/800px-Ginga_tetsudo_no_yoru.jpg"
-  class="clickable"
-
-  event-set__enter="_event: mouseenter; scale: 1.1 1.1 1"
-  event-set__leave="_event: mouseleave; scale: 1 1 1"
-
-  onclick="window.location.href='https://www.aozora.gr.jp/cards/000081/card43737.html'">
-</a-plane>
-
-  <!-- タイトル -->
-  <a-text
-    value="銀河鉄道の夜"
-    position="-2.7 0.6 -4.9"
-    color="#111"
-    width="5">
-  </a-text>
+  <a-link
+    href="https://www.aozora.gr.jp/cards/000081/card43737.html"
+    title="銀河鉄道の夜"
+    image="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Ginga_tetsudo_no_yoru.jpg/800px-Ginga_tetsudo_no_yoru.jpg"
+    position="-2 2 -4.5"
+    scale="1.5 1.5 1">
+  </a-link>
 
   <!-- ===================================== -->
   <!-- Digital computer design fundamentals -->
   <!-- ===================================== -->
 
-  <!-- 本の表紙 -->
-<a-plane
-  position="2 2 -5"
-  width="1.5"
-  height="2.2"
-  src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=800&auto=format&fit=crop"
-  class="clickable"
-  link-handler="url: https://catalog.hathitrust.org/Record/0044441157">
-</a-plane>
-
-  <!-- タイトル -->
-  <a-text
-    value="Digital computer design fundamentals"
-    position="0.8 0.2 -4.9"
-    color="#111"
-    width="6">
-  </a-text>
+  <a-link
+    href="https://catalog.hathitrust.org/Record/0044441157"
+    title="Digital computer design fundamentals"
+    image="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=800&auto=format&fit=crop"
+    position="2 2 -4.5"
+    scale="1.5 1.5 1">
+  </a-link>
 
 </a-scene>
 
