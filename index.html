@@ -2,10 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Virtual Book Display - Demo</title>
+    <title>Virtual Book Display - Interactive Demo</title>
     <!-- A-Frameのライブラリを読み込み -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <!-- クリックでリンクを開くためのカスタムコンポーネント -->
+    
+    <!-- カスタムコンポーネント: クリックでリンクを開く -->
     <script>
       AFRAME.registerComponent('url-link', {
         schema: {url: {type: 'string'}},
@@ -15,77 +16,76 @@
           }.bind(this));
         }
       });
+      
+      // カスタムコンポーネント: ISBNから書影を取得
       AFRAME.registerComponent('isbn-cover', {
-        schema: { type: 'string' }, // ISBNを指定する
+        schema: { type: 'string' },
         init: function () {
           var el = this.el;
           var isbn = this.data;
-    
-    // openBD APIを叩く
-    fetch('https://api.openbd.jp/v1/get?isbn=' + isbn)
-      .then(response => response.json())
-      .then(data => {
-        // データが存在し、かつ書影（cover）があるかチェック
-        if (data && data[0] && data[0].summary && data[0].summary.cover) {
-          var coverUrl = data[0].summary.cover;
-          // A-Frameのエンティティにテクスチャとしてセット
-          el.setAttribute('src', coverUrl);
-        } else {
-          console.log('書影が見つかりませんでした: ' + isbn);
+          fetch('https://api.openbd.jp/v1/get?isbn=' + isbn)
+            .then(response => response.json())
+            .then(data => {
+              if (data && data[0] && data[0].summary && data[0].summary.cover) {
+                var coverUrl = data[0].summary.cover;
+                el.setAttribute('src', coverUrl);
+              } else {
+                console.log('書影が見つかりませんでした: ' + isbn);
+              }
+            })
+            .catch(err => console.error('APIエラー:', err));
         }
-      })
-      .catch(err => console.error('APIエラー:', err));
-  }
-});
+      });
     </script>
   </head>
   <body>
-    <a-scene cursor="rayOrigin: mouse">
-      <!-- 1. アセット管理：画像をここで定義 -->
+    <!-- mouse-cursorを削除し、scene全体のcursor設定は残す -->
+    <a-scene>
       <a-assets>
-        <!-- 代わりのダミー画像（あとで実際の書影URLに差し替えてください） -->
+        <!-- デフォルト画像 -->
         <img id="ginga-cover" src="https://placehold.jp/24/336699/ffffff/300x450.png?text=銀河鉄道の夜">
         <img id="comp-cover" src="https://placehold.jp/24/669933/ffffff/300x450.png?text=Digital+Computer">
-        <img id="entre-cover" src="https://placehold.jp/24/993333/ffffff/300x450.png?text=Entrepreneurship">
       </a-assets>
 
       <!-- 2. 背景と地面 -->
       <a-sky color="#ECECEC"></a-sky>
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
+      <!-- 地面（位置を0 0 0に） -->
+      <a-plane position="0 0 0" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
       
-      <!-- 本棚の棚板イメージ -->
-      <a-box position="0 1.15 -3" width="4" height="0.05" depth="1" color="#8B4513"></a-box>
+      <!-- ★棚の高さを下げる (position.y = 1.15 -> 0.05) -->
+      <a-box position="0 0.05 -2" width="3.5" height="0.1" depth="0.8" color="#8B4513"></a-box>
 
-      <!-- 3. 本の配置（面陳） -->
-            
-      <!-- 銀河鉄道の夜 -->
-      <a-box position="-1.2 1.5 -3" depth="0.05" height="0.6" width="0.4" 
-       isbn-cover="4101092028" 
+      <!-- 3. 本の配置（面陳）★位置を棚に合わせて下げる -->
+      
+      <!-- 銀河鉄道の夜 (position.y = 1.5 -> 0.4) -->
+      <a-box position="-0.9 0.4 -2" depth="0.05" height="0.6" width="0.4" 
+             isbn-cover="4003107632" 
              url-link="url: https://www.aozora.gr.jp/cards/000081/card43737.html"
              animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
              animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
       </a-box>
 
-      <!-- Digital computer design fundamentals -->
-      <a-box position="0 1.5 -3" depth="0.05" height="0.6" width="0.4" 
+      <!-- Digital computer design fundamentals (position.y = 1.5 -> 0.4) -->
+      <a-box position="0 0.4 -2" depth="0.05" height="0.6" width="0.4" 
              src="#comp-cover"
              url-link="url: https://catalog.hathitrust.org/Record/004444115"
              animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
              animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
       </a-box>
 
-<!-- アントレプレナーシップ（アニメーション追加版） -->
-<a-box position="1.2 1.5 -3" 
-       depth="0.05" height="0.6" width="0.4"
-       isbn-cover="9784641165984" 
-       url-link="url: https://elib.maruzen.co.jp/elib/html/BookDetail/Id/3000131151"
-       animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
-       animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
-</a-box>
+      <!-- アントレプレナーシップ (position.y = 1.5 -> 0.4) -->
+      <a-box position="0.9 0.4 -2" depth="0.05" height="0.6" width="0.4"
+             isbn-cover="9784641165984" 
+             url-link="url: https://elib.maruzen.co.jp/elib/html/BookDetail/Id/3000131151"
+             animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
+             animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
+      </a-box>
 
-      <!-- 4. カメラ設定（マウスでクリックできるように設定） -->
-      <a-entity camera look-controls>
-        <a-cursor color="#FF0000"></a-cursor>
+      <!-- ★WASD移動と視線クリックの両立 -->
+      <a-entity id="rig" position="0 0 0" movement-controls="fly: false; speed: 0.2">
+        <a-entity camera position="0 1.6 0" look-controls>
+          <a-cursor color="#FF0000" raycaster="objects: [url-link]"></a-cursor>
+        </a-entity>
       </a-entity>
       
     </a-scene>
