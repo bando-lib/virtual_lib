@@ -42,9 +42,11 @@
     position="0 1.6 4">
 
     <a-camera>
-      <a-cursor color="#333"></a-cursor>
+      <a-cursor
+        color="#333"
+        raycaster="objects: .clickable">
+        </a-cursor>
     </a-camera>
-
   </a-entity>
 
   <!-- 床 -->
