@@ -5,8 +5,10 @@
   <title>Virtual Library Prototype</title>
 
   <!-- A-Frame -->
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-
+  
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+<script src="https://unpkg.com/aframe-event-set-component@5.0.1/dist/aframe-event-set-component.min.js"></script>
+  
   <style>
     body {
       margin: 0;
@@ -92,7 +94,11 @@
   height="2.2"
   src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Ginga_tetsudo_no_yoru.jpg/800px-Ginga_tetsudo_no_yoru.jpg"
   class="clickable"
-  link-handler="url: https://www.aozora.gr.jp/cards/000081/card43737.html">
+
+  event-set__enter="_event: mouseenter; scale: 1.1 1.1 1"
+  event-set__leave="_event: mouseleave; scale: 1 1 1"
+
+  onclick="window.location.href='https://www.aozora.gr.jp/cards/000081/card43737.html'">
 </a-plane>
 
   <!-- タイトル -->
@@ -126,20 +132,6 @@
   </a-text>
 
 </a-scene>
-
-<script>
-  AFRAME.registerComponent('link-handler', {
-    schema: {
-      url: { type: 'string' }
-    },
-
-    init: function () {
-      this.el.addEventListener('click', () => {
-        window.open(this.data.url, '_blank');
-      });
-    }
-  });
-</script>
 
 </body>
 </html>
