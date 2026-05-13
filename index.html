@@ -108,13 +108,14 @@
   <!-- ===================================== -->
 
   <!-- 本の表紙 -->
-  <a-plane
-    position="2 2 -5"
-    width="1.5"
-    height="2.2"
-    src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=800&auto=format&fit=crop"
-    class="clickable">
-  </a-plane>
+<a-plane
+  position="2 2 -5"
+  width="1.5"
+  height="2.2"
+  src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=800&auto=format&fit=crop"
+  class="clickable"
+  link-handler="url: https://catalog.hathitrust.org/Record/0044441157">
+</a-plane>
 
   <!-- タイトル -->
   <a-text
@@ -123,16 +124,6 @@
     color="#111"
     width="6">
   </a-text>
-
-  <!-- クリック領域 -->
-  <a-plane
-    position="2 2 -4.95"
-    width="1.5"
-    height="2.2"
-    material="opacity: 0"
-    class="clickable"
-    link-handler="url: https://catalog.hathitrust.org/Record/0044441157">
-  </a-plane>
 
 </a-scene>
 
