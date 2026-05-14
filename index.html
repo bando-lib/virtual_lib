@@ -38,56 +38,57 @@
         }
       });
     </script>
-  </head>
-  <body>
-    <!-- rayOrigin: mouse を追加することで、マウスの場所で直接クリック可能になります -->
-    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [url-link]">
-      <a-assets>
-        <!-- デフォルト画像 -->
-        <img id="ginga-cover" src="https://placehold.jp/24/336699/ffffff/300x450.png?text=銀河鉄道の夜">
-        <img id="comp-cover" src="https://placehold.jp/24/669933/ffffff/300x450.png?text=Digital+Computer">
-      </a-assets>
+  </head><body>
+  <a-scene cursor="rayOrigin: mouse" raycaster="objects: [url-link]">
+    <a-assets>
+      <img id="default-cover" src="https://placehold.jp/24/cccccc/ffffff/300x450.png?text=Loading...">
+    </a-assets>
 
-      <!-- 2. 背景と地面 -->
-      <a-sky color="#ECECEC"></a-sky>
-      <!-- 地面（位置を0 0 0に） -->
-      <a-plane position="0 0 0" rotation="-90 0 0" width="10" height="10" color="#327fa8"></a-plane>
-      
-      <!-- 棚の高さ -->
-      <a-box position="0 0.05 -2" width="3.5" height="0.1" depth="0.8" color="#8B4513"></a-box>
+    <a-sky color="#ECECEC"></a-sky>
+    <a-plane position="0 0 0" rotation="-90 0 0" width="10" height="10" color="#327fa8"></a-plane>
+    
+    <!-- 本を並べるための「親」要素 -->
+    <a-entity id="book-shelf" position="0 0.4 -2"></a-entity>
+    
+    <!-- 棚の板 -->
+    <a-box position="0 0.05 -2" width="5" height="0.1" depth="0.8" color="#8B4513"></a-box>
 
-      <!-- 3. 本の配置（面陳）★位置を棚に合わせて下げる -->
-      
-      <!-- 銀河鉄道の夜 (position.y = 1.5 -> 0.4) -->
-      <a-box position="-0.9 0.4 -2" depth="0.05" height="0.6" width="0.4" 
-             isbn-cover="4003107632" 
-             url-link="url: https://www.aozora.gr.jp/cards/000081/card43737.html"
-             animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
-             animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
-      </a-box>
+    <a-entity id="rig" position="0 0 0" movement-controls="fly: false; speed: 0.2">
+      <a-entity camera position="0 1.6 0" look-controls></a-entity>
+    </a-entity>
 
-      <!-- デ調べる技術 (position.y = 1.5 -> 0.4) -->
-      <a-box position="0 0.4 -2" depth="0.05" height="0.6" width="0.4" 
-            isbn-cover="9784774407760" 
-             url-link="url: https://elib.maruzen.co.jp/elib/html/BookDetail/Id/3000156452"
-             animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
-             animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
-      </a-box>
-
-      <!-- アントレプレナーシップ (position.y = 1.5 -> 0.4) -->
-      <a-box position="0.9 0.4 -2" depth="0.05" height="0.6" width="0.4"
-             isbn-cover="9784641165984" 
-             url-link="url: https://elib.maruzen.co.jp/elib/html/BookDetail/Id/3000131151"
-             animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
-             animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
-      </a-box>
-
-<!-- カメラ設定：WASD移動を有効にしつつ、マウスで直接クリックする設定 -->
-      <a-entity id="rig" position="0 0 0" movement-controls="fly: false; speed: 0.2">
-        <a-entity camera position="0 1.6 0" look-controls>
-        </a-entity>
-      </a-entity>
-      
-    </a-scene>
-  </body>
-</html>
+    <script>
+      // 1. books.json を読み込む
+      fetch('books.json')
+        .then(response => response.json())
+        .then(books => {
+          const shelf = document.querySelector('#book-shelf');
+          
+          books.forEach((book, index) => {
+            // 2. 本（a-box）を動的に作成
+            const bookEl = document.createElement('a-box');
+            
+            // 3. 本の横並びの位置を計算（indexを使ってずらす）
+            const xPos = (index - (books.length - 1) / 2) * 1.0; 
+            
+            bookEl.setAttribute('position', `${xPos} 0 0`);
+            bookEl.setAttribute('depth', '0.05');
+            bookEl.setAttribute('height', '0.6');
+            bookEl.setAttribute('width', '0.4');
+            bookEl.setAttribute('src', '#default-cover');
+            
+            // 自作コンポーネントをセット
+            bookEl.setAttribute('isbn-cover', book.isbn);
+            bookEl.setAttribute('url-link', `url: ${book.url}`);
+            
+            // アニメーション追加
+            bookEl.setAttribute('animation__hover', 'property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200');
+            bookEl.setAttribute('animation__leave', 'property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200');
+            
+            // 棚に追加
+            shelf.appendChild(bookEl);
+          });
+        });
+    </script>
+  </a-scene>
+</body>
