@@ -82,17 +82,9 @@
              animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
       </a-box>
 
-      <!-- カメラ設定：a-cursor を削除してスッキリさせます -->
-  <a-entity id="rig" position="0 0 0" movement-controls="fly: false; speed: 0.2">
-    <a-entity camera position="0 1.6 0" look-controls>
-      <!-- 赤い丸（a-cursor）を消しました -->
-    </a-entity>
-  </a-entity>
-
-      <!-- ★WASD移動と視線クリックの両立 -->
+<!-- カメラ設定：WASD移動を有効にしつつ、マウスで直接クリックする設定 -->
       <a-entity id="rig" position="0 0 0" movement-controls="fly: false; speed: 0.2">
         <a-entity camera position="0 1.6 0" look-controls>
-          <a-cursor color="#FF0000" raycaster="objects: [url-link]"></a-cursor>
         </a-entity>
       </a-entity>
       
