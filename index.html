@@ -9,34 +9,46 @@
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
     <!-- カスタムコンポーネント: クリックでリンクを開く -->
     <script>
-      AFRAME.registerComponent('url-link', {
-        schema: {url: {type: 'string'}},
-        init: function () {
-          this.el.addEventListener('click', function () {
-            window.open(this.data.url, '_blank');
-          }.bind(this));
+AFRAME.registerComponent('isbn-cover', {
+  schema: { type: 'string' },
+  init: function () {
+    var el = this.el;
+    var isbn = this.data.replace(/-/g, ''); // ハイフンを除去
+
+    fetch('https://api.openbd.jp/v1/get?isbn=' + isbn)
+      .then(response => response.json())
+      .then(data => {
+        if (data && data[0]) {
+          var coverUrl = "";
+          
+          // 1. まずは一番確実な「Summary」から探す
+          if (data[0].summary && data[0].summary.cover) {
+            coverUrl = data[0].summary.cover;
+          } 
+          // 2. なければ、深い階層（Onix）の中を探しに行く
+          else if (data[0].onix && 
+                   data[0].onix.CollateralDetail && 
+                   data[0].onix.CollateralDetail.SupportingResource) {
+            var resources = data[0].onix.CollateralDetail.SupportingResource;
+            var res = resources.find(r => r.ResourceContentType === "01"); // 01は表紙画像
+            if (res && res.ResourceVersion && res.ResourceVersion[0]) {
+              coverUrl = res.ResourceVersion[0].ResourceFormDetail; // ここにURLがある場合が多い
+            }
+          }
+
+          // それでもURLが空っぽなら、OpenBDの標準URLを強引に作る
+          if (!coverUrl || coverUrl === "") {
+            coverUrl = 'https://cover.openbd.jp/' + isbn + '.jpg';
+          }
+
+          // 画像をセット（セキュリティ対策込み）
+          el.setAttribute('material', 'crossOrigin: anonymous');
+          el.setAttribute('src', coverUrl);
         }
-      });
-      
-      // カスタムコンポーネント: ISBNから書影を取得
-      AFRAME.registerComponent('isbn-cover', {
-        schema: { type: 'string' },
-        init: function () {
-          var el = this.el;
-          var isbn = this.data;
-          fetch('https://api.openbd.jp/v1/get?isbn=' + isbn)
-            .then(response => response.json())
-            .then(data => {
-              if (data && data[0] && data[0].summary && data[0].summary.cover) {
-                var coverUrl = data[0].summary.cover;
-                el.setAttribute('src', coverUrl);
-              } else {
-                console.log('書影が見つかりませんでした: ' + isbn);
-              }
-            })
-            .catch(err => console.error('APIエラー:', err));
-        }
-      });
+      })
+      .catch(err => console.error('APIエラー:', err));
+  }
+});
     </script>
   </head><body>
   <a-scene cursor="rayOrigin: mouse" raycaster="objects: [url-link]">
