@@ -65,29 +65,27 @@
           const shelf = document.querySelector('#book-shelf');
           
           books.forEach((book, index) => {
-            // 2. 本（a-box）を動的に作成
-            const bookEl = document.createElement('a-box');
-            
-            // 3. 本の横並びの位置を計算（indexを使ってずらす）
-            const xPos = (index - (books.length - 1) / 2) * 1.0; 
-            
-            bookEl.setAttribute('position', `${xPos} 0 0`);
-            bookEl.setAttribute('depth', '0.05');
-            bookEl.setAttribute('height', '0.6');
-            bookEl.setAttribute('width', '0.4');
-            bookEl.setAttribute('src', '#default-cover');
-            
-            // 自作コンポーネントをセット
-            bookEl.setAttribute('isbn-cover', book.isbn);
-            bookEl.setAttribute('url-link', `url: ${book.url}`);
-            
-            // アニメーション追加
-            bookEl.setAttribute('animation__hover', 'property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200');
-            bookEl.setAttribute('animation__leave', 'property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200');
-            
-            // 棚に追加
-            shelf.appendChild(bookEl);
-          });
+  const bookEl = document.createElement('a-box');
+  
+  // 位置や基本設定（省略）
+  const xPos = (index - (books.length - 1) / 2) * 1.0; 
+  bookEl.setAttribute('position', `${xPos} 0 0`);
+  bookEl.setAttribute('depth', '0.05');
+  bookEl.setAttribute('height', '0.6');
+  bookEl.setAttribute('width', '0.4');
+
+  // ★ここがポイント！
+  if (book.cover) {
+    // JSONに画像URLが書いてあれば、直接それをセットする
+    bookEl.setAttribute('src', book.cover);
+  } else {
+    // 書いていなければ、OpenBDコンポーネントで取得する
+    bookEl.setAttribute('isbn-cover', book.isbn);
+  }
+
+  bookEl.setAttribute('url-link', `url: ${book.url}`);
+  shelf.appendChild(bookEl);
+});
         });
     </script>
   </a-scene>
