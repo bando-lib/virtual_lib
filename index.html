@@ -7,8 +7,9 @@
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <!-- 追加：移動機能を有効にするためのライブラリ -->
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
-    <!-- カスタムコンポーネント: クリックでリンクを開く -->
+    <!-- カスタムコンポーネント -->
     <script>
+// 書影を取得してセットするコンポーネント
 AFRAME.registerComponent('isbn-cover', {
   schema: { type: 'string' },
   init: function () {
@@ -32,7 +33,7 @@ AFRAME.registerComponent('isbn-cover', {
             var resources = data[0].onix.CollateralDetail.SupportingResource;
             var res = resources.find(r => r.ResourceContentType === "01"); // 01は表紙画像
             if (res && res.ResourceVersion && res.ResourceVersion[0]) {
-              coverUrl = res.ResourceVersion[0].ResourceFormDetail; // ここにURLがある場合が多い
+              coverUrl = res.ResourceVersion[0].ResourceFormDetail;
             }
           }
 
@@ -41,16 +42,33 @@ AFRAME.registerComponent('isbn-cover', {
             coverUrl = 'https://cover.openbd.jp/' + isbn + '.jpg';
           }
 
-          // 画像をセット（セキュリティ対策込み）
-          el.setAttribute('material', 'crossOrigin: anonymous');
-          el.setAttribute('src', coverUrl);
+          // 画像をセット
+          el.setAttribute('material', 'src: url(' + coverUrl + '); crossOrigin: anonymous');
         }
       })
       .catch(err => console.error('APIエラー:', err));
   }
 });
+
+// リンククリック機能
+AFRAME.registerComponent('url-link', {
+  schema: { 
+    url: { type: 'string' }
+  },
+  init: function () {
+    var el = this.el;
+    var url = this.data.url;
+
+    el.addEventListener('click', function () {
+      if (url) {
+        window.open(url, '_blank');
+      }
+    });
+  }
+});
     </script>
-  </head><body>
+  </head>
+  <body>
   <a-scene cursor="rayOrigin: mouse" raycaster="objects: [url-link]">
     <a-assets>
       <img id="default-cover" src="https://placehold.jp/24/cccccc/ffffff/300x450.png?text=Loading...">
@@ -70,10 +88,10 @@ AFRAME.registerComponent('isbn-cover', {
       <a-entity camera position="0 1.6 0" look-controls></a-entity>
     </a-entity>
 
-  </a-scene> <!-- ★シーンはここで一旦閉じる！ -->
+  </a-scene>
 
   <script>
-    // 1. books.json を読み込む
+    // books.json を読み込む
     fetch('books.json')
       .then(response => response.json())
       .then(books => {
@@ -92,19 +110,19 @@ AFRAME.registerComponent('isbn-cover', {
 
           // 書影のセット（JSONにcoverがあれば優先、なければISBNから取得）
           if (book.cover) {
-            bookEl.setAttribute('src', book.cover);
+            bookEl.setAttribute('material', `src: url(${book.cover}); crossOrigin: anonymous`);
           } else {
             bookEl.setAttribute('isbn-cover', book.isbn);
           }
 
-          // リンク先の設定
+          // リンク先の設定（スペースなしで指定）
           bookEl.setAttribute('url-link', `url: ${book.url}`);
 
-          // ホバー時のアニメーション（これがあると「触れる」のがわかりやすいです！）
+          // ホバー時のアニメーション
           bookEl.setAttribute('animation__hover', 'property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200');
           bookEl.setAttribute('animation__leave', 'property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200');
           
-          // 本を空間に追加
+          // ���を空間に追加
           shelf.appendChild(bookEl);
         });
       })
