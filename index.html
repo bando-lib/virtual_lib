@@ -7,126 +7,87 @@
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <!-- 追加：移動機能を有効にするためのライブラリ -->
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
-    <!-- カスタムコンポーネント -->
+    <!-- カスタムコンポーネント: クリックでリンクを開く -->
     <script>
-// 書影を取得してセットするコンポーネント
-AFRAME.registerComponent('isbn-cover', {
-  schema: { type: 'string' },
-  init: function () {
-    var el = this.el;
-    var isbn = this.data.replace(/-/g, ''); // ハイフンを除去
-
-    fetch('https://api.openbd.jp/v1/get?isbn=' + isbn)
-      .then(response => response.json())
-      .then(data => {
-        if (data && data[0]) {
-          var coverUrl = "";
-          
-          // 1. まずは一番確実な「Summary」から探す
-          if (data[0].summary && data[0].summary.cover) {
-            coverUrl = data[0].summary.cover;
-          } 
-          // 2. なければ、深い階層（Onix）の中を探しに行く
-          else if (data[0].onix && 
-                   data[0].onix.CollateralDetail && 
-                   data[0].onix.CollateralDetail.SupportingResource) {
-            var resources = data[0].onix.CollateralDetail.SupportingResource;
-            var res = resources.find(r => r.ResourceContentType === "01"); // 01は表紙画像
-            if (res && res.ResourceVersion && res.ResourceVersion[0]) {
-              coverUrl = res.ResourceVersion[0].ResourceFormDetail;
-            }
-          }
-
-          // それでもURLが空っぽなら、OpenBDの標準URLを強引に作る
-          if (!coverUrl || coverUrl === "") {
-            coverUrl = 'https://cover.openbd.jp/' + isbn + '.jpg';
-          }
-
-          // 画像をセット
-          el.setAttribute('material', 'src: url(' + coverUrl + '); crossOrigin: anonymous');
+      AFRAME.registerComponent('url-link', {
+        schema: {url: {type: 'string'}},
+        init: function () {
+          this.el.addEventListener('click', function () {
+            window.open(this.data.url, '_blank');
+          }.bind(this));
         }
-      })
-      .catch(err => console.error('APIエラー:', err));
-  }
-});
-
-// リンククリック機能
-AFRAME.registerComponent('url-link', {
-  schema: { 
-    url: { type: 'string' }
-  },
-  init: function () {
-    var el = this.el;
-    var url = this.data.url;
-
-    el.addEventListener('click', function () {
-      if (url) {
-        window.open(url, '_blank');
-      }
-    });
-  }
-});
+      });
+      
+      // カスタムコンポーネント: ISBNから書影を取得
+      AFRAME.registerComponent('isbn-cover', {
+        schema: { type: 'string' },
+        init: function () {
+          var el = this.el;
+          var isbn = this.data;
+          fetch('https://api.openbd.jp/v1/get?isbn=' + isbn)
+            .then(response => response.json())
+            .then(data => {
+              if (data && data[0] && data[0].summary && data[0].summary.cover) {
+                var coverUrl = data[0].summary.cover;
+                el.setAttribute('src', coverUrl);
+              } else {
+                console.log('書影が見つかりませんでした: ' + isbn);
+              }
+            })
+            .catch(err => console.error('APIエラー:', err));
+        }
+      });
     </script>
   </head>
   <body>
-  <a-scene cursor="rayOrigin: mouse" raycaster="objects: [url-link]">
-    <a-assets>
-      <img id="default-cover" src="https://placehold.jp/24/cccccc/ffffff/300x450.png?text=Loading...">
-    </a-assets>
+    <!-- rayOrigin: mouse を追加することで、マウスの場所で直接クリック可能になります -->
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [url-link]">
+      <a-assets>
+        <!-- デフォルト画像 -->
+        <img id="ginga-cover" src="https://placehold.jp/24/336699/ffffff/300x450.png?text=銀河鉄道の夜">
+        <img id="comp-cover" src="https://placehold.jp/24/669933/ffffff/300x450.png?text=Digital+Computer">
+      </a-assets>
 
-    <a-sky color="#ECECEC"></a-sky>
-    <a-plane position="0 0 0" rotation="-90 0 0" width="10" height="10" color="#327fa8"></a-plane>
-    
-    <!-- 本を並べるための「親」要素 -->
-    <a-entity id="book-shelf" position="0 0.4 -2"></a-entity>
-    
-    <!-- 棚の板 -->
-    <a-box position="0 0.05 -2" width="5" height="0.1" depth="0.8" color="#8B4513"></a-box>
+      <!-- 2. 背景と地面 -->
+      <a-sky color="#ECECEC"></a-sky>
+      <!-- 地面（位置を0 0 0に） -->
+      <a-plane position="0 0 0" rotation="-90 0 0" width="10" height="10" color="#327fa8"></a-plane>
+      
+      <!-- 棚の高さ -->
+      <a-box position="0 0.05 -2" width="3.5" height="0.1" depth="0.8" color="#8B4513"></a-box>
 
-    <!-- 移動用カメラ設定 -->
-    <a-entity id="rig" position="0 0 0" movement-controls="fly: false; speed: 0.2">
-      <a-entity camera position="0 1.6 0" look-controls></a-entity>
-    </a-entity>
+      <!-- 3. 本の配置（面陳）★位置を棚に合わせて下げる -->
+      
+      <!-- 銀河鉄道の夜 (position.y = 1.5 -> 0.4) -->
+      <a-box position="-0.9 0.4 -2" depth="0.05" height="0.6" width="0.4" 
+             isbn-cover="4003107632" 
+             url-link="url: https://www.aozora.gr.jp/cards/000081/card43737.html"
+             animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
+             animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
+      </a-box>
 
-  </a-scene>
+      <!-- デ調べる技術 (position.y = 1.5 -> 0.4) -->
+      <a-box position="0 0.4 -2" depth="0.05" height="0.6" width="0.4" 
+            isbn-cover="9784774407760" 
+             url-link="url: https://elib.maruzen.co.jp/elib/html/BookDetail/Id/3000156452"
+             animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
+             animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
+      </a-box>
 
-  <script>
-    // books.json を読み込む
-    fetch('books.json')
-      .then(response => response.json())
-      .then(books => {
-        const shelf = document.querySelector('#book-shelf');
-        
-        books.forEach((book, index) => {
-          const bookEl = document.createElement('a-box');
-          
-          // 位置の計算
-          const xPos = (index - (books.length - 1) / 2) * 1.0; 
-          
-          bookEl.setAttribute('position', `${xPos} 0 0`);
-          bookEl.setAttribute('depth', '0.05');
-          bookEl.setAttribute('height', '0.6');
-          bookEl.setAttribute('width', '0.4');
+      <!-- アントレプレナーシップ (position.y = 1.5 -> 0.4) -->
+      <a-box position="0.9 0.4 -2" depth="0.05" height="0.6" width="0.4"
+             isbn-cover="9784641165984" 
+             url-link="url: https://elib.maruzen.co.jp/elib/html/BookDetail/Id/3000131151"
+             animation__hover="property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200"
+             animation__leave="property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200">
+      </a-box>
 
-          // 書影のセット（JSONにcoverがあれば優先、なければISBNから取得）
-          if (book.cover) {
-            bookEl.setAttribute('material', `src: url(${book.cover}); crossOrigin: anonymous`);
-          } else {
-            bookEl.setAttribute('isbn-cover', book.isbn);
-          }
-
-          // リンク先の設定（スペースなしで指定）
-          bookEl.setAttribute('url-link', `url: ${book.url}`);
-
-          // ホバー時のアニメーション
-          bookEl.setAttribute('animation__hover', 'property: scale; to: 1.1 1.1 1.1; startEvents: mouseenter; dur: 200');
-          bookEl.setAttribute('animation__leave', 'property: scale; to: 1 1 1; startEvents: mouseleave; dur: 200');
-          
-          // ���を空間に追加
-          shelf.appendChild(bookEl);
-        });
-      })
-      .catch(err => console.error('JSON読み込みエラー:', err));
-  </script>
-</body>
+<!-- カメラ設定：WASD移動を有効にしつつ、マウスで直接クリックする設定 -->
+      <a-entity id="rig" position="0 0 0" movement-controls="fly: false; speed: 0.2">
+        <a-entity camera position="0 1.6 0" look-controls>
+        </a-entity>
+      </a-entity>
+      
+    </a-scene>
+  </body>
 </html>
