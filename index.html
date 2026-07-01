@@ -53,7 +53,7 @@ AFRAME.registerComponent('isbn-cover', {
     const workingUrl = await findWorkingCoverUrl(isbn);
 
     if (workingUrl) {
-      el.setAttribute('material', 'src: url(' + workingUrl + ');
+      el.setAttribute('material', 'src: url(' + workingUrl + ')');
     } else {
       // 全ソース失敗 → タイトルテキストで代替表示
       console.warn('[cover] 書影が見つかりませんでした ISBN:', isbn);
@@ -135,7 +135,7 @@ AFRAME.registerComponent('url-link', {
               finalUrl = await findWorkingCoverUrl(book.isbn.replace(/-/g, ''));
             }
             if (finalUrl) {
-              bookEl.setAttribute('material', 'src: url(' + finalUrl + ');
+              bookEl.setAttribute('material', 'src: url(' + finalUrl + ')');
             } else {
               bookEl.setAttribute('material', 'color: #5a3a1a; roughness: 0.8');
             }
