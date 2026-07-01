@@ -83,7 +83,7 @@ AFRAME.registerComponent('url-link', {
   <body>
   <a-scene cursor="rayOrigin: mouse" raycaster="objects: [url-link]">
     <a-assets>
-      <img id="default-cover" src="https://placehold.jp/24/cccccc/ffffff/300x450.png?text=Loading...">
+      <!-- デフォルトカバー：CORS対応のData URIで代替 -->
     </a-assets>
 
     <a-sky color="#ECECEC"></a-sky>
@@ -135,7 +135,15 @@ AFRAME.registerComponent('url-link', {
               finalUrl = await findWorkingCoverUrl(book.isbn.replace(/-/g, ''));
             }
             if (finalUrl) {
-              bookEl.setAttribute('material', 'src: url(' + finalUrl + '); crossOrigin: anonymous');
+              // A-Frame では crossOrigin を material に直接渡せない。
+              // <a-assets> に <img crossorigin="anonymous"> を追加して #id で参照するのが正しい方法。
+              const imgId = 'cover-' + index;
+              const imgEl = document.createElement('img');
+              imgEl.id = imgId;
+              imgEl.crossOrigin = 'anonymous';
+              imgEl.src = finalUrl;
+              document.querySelector('a-assets').appendChild(imgEl);
+              bookEl.setAttribute('material', 'src: #' + imgId);
             } else {
               bookEl.setAttribute('material', 'color: #5a3a1a; roughness: 0.8');
             }
